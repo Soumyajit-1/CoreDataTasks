@@ -39,7 +39,7 @@ class PhotoProcessor {
                 
                 do {
                     try jpegData.write(to: fileURL)
-                    print("Saved: \(fileURL.lastPathComponent)")
+                    print("Saved: \(fileURL)")
                 } catch {
                     print("Failed to save image: \(error)")
                 }

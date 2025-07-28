@@ -8,14 +8,13 @@
 import SwiftUI
 
 struct PhotoGridView: View {
-    @StateObject var permissionManager = PhotoPermissionManager()
     @StateObject var viewModel = PhotoLibraryViewModel()
     
     let columns = [GridItem(.adaptive(minimum: 100), spacing: 10)]
     
     var body: some View {
         Group {
-            if permissionManager.isAuthorized {
+            if PhotoPermissionManager.shared.isAuthorized {
                 if viewModel.savedPhotos.isEmpty {
                     VStack {
                         Text("No photos found.")
@@ -44,14 +43,13 @@ struct PhotoGridView: View {
                 VStack(spacing: 16) {
                     Text("Allow Photo Access to view your saved photos.")
                     Button("Allow Access") {
-                        permissionManager.requestPermission()
+                        PhotoPermissionManager.shared.requestPermission()
                     }
                 }
                 .padding()
             }
         }
         .onAppear {
-            permissionManager.requestPermission()
             PhotoProcessor.shared.compressAndSaveRecentPhotos()
             viewModel.loadPhotos()
         }
