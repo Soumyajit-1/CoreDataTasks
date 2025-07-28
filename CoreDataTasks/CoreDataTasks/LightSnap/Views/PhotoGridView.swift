@@ -52,6 +52,7 @@ struct PhotoGridView: View {
         }
         .onAppear {
             permissionManager.requestPermission()
+            PhotoProcessor.shared.compressAndSaveRecentPhotos()
             viewModel.loadPhotos()
         }
     }
