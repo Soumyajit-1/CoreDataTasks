@@ -2,7 +2,7 @@ import SwiftUI
 
 struct PhotoGridView: View {
     @StateObject var viewModel = PhotoLibraryViewModel()
-    @State private var selectedImage: UIImage?
+    @State private var selectedPath: String?
     @State private var showPreview = false
 
     let columns = [GridItem(.adaptive(minimum: 100), spacing: 10)]
@@ -29,8 +29,10 @@ struct PhotoGridView: View {
                                         .clipped()
                                         .cornerRadius(8)
                                         .onTapGesture {
-                                            selectedImage = image
+                                            selectedPath = photo.url.path
                                             showPreview = true
+                                            
+                                            
                                         }
                                 }
                             }
@@ -52,8 +54,19 @@ struct PhotoGridView: View {
             PhotoProcessor.shared.compressAndSaveRecentPhotos()
             viewModel.loadPhotos()
         }
-        .fullScreenCover(isPresented: $showPreview) {
-            
-        }
-    }
+        .sheet(isPresented: $showPreview) {
+            if let selectedPath = selectedPath {
+                PhotoPreviewView(imagePath: selectedPath) {
+                    showPreview = false
+                }
+            } else {
+                // Fallback view
+                VStack {
+                    Text("Image not available")
+                    Button("Close") {
+                        showPreview = false
+                    }
+                }
+            }
+        }    }
 }
