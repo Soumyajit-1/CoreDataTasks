@@ -1,17 +1,12 @@
-//
-//  PhotoGridView.swift
-//  CoreDataTasks
-//
-//  Created by Sk Jasimuddin on 28/07/25.
-//
-
 import SwiftUI
 
 struct PhotoGridView: View {
     @StateObject var viewModel = PhotoLibraryViewModel()
-    
+    @State private var selectedImage: UIImage?
+    @State private var showPreview = false
+
     let columns = [GridItem(.adaptive(minimum: 100), spacing: 10)]
-    
+
     var body: some View {
         Group {
             if PhotoPermissionManager.shared.isAuthorized {
@@ -33,6 +28,10 @@ struct PhotoGridView: View {
                                         .frame(width: 100, height: 100)
                                         .clipped()
                                         .cornerRadius(8)
+                                        .onTapGesture {
+                                            selectedImage = image
+                                            showPreview = true
+                                        }
                                 }
                             }
                         }
@@ -52,6 +51,9 @@ struct PhotoGridView: View {
         .onAppear {
             PhotoProcessor.shared.compressAndSaveRecentPhotos()
             viewModel.loadPhotos()
+        }
+        .fullScreenCover(isPresented: $showPreview) {
+            
         }
     }
 }
