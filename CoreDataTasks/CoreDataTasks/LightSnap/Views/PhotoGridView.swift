@@ -4,9 +4,9 @@ struct PhotoGridView: View {
     @StateObject var viewModel = PhotoLibraryViewModel()
     @State private var selectedPath: String?
     @State private var showPreview = false
-
+    
     let columns = [GridItem(.adaptive(minimum: 100), spacing: 10)]
-
+    
     var body: some View {
         Group {
             if PhotoPermissionManager.shared.isAuthorized {
@@ -54,7 +54,7 @@ struct PhotoGridView: View {
             PhotoProcessor.shared.compressAndSaveRecentPhotos()
             viewModel.loadPhotos()
         }
-        .sheet(isPresented: $showPreview) {
+        .fullScreenCover(isPresented: $showPreview) {
             if let selectedPath = selectedPath {
                 PhotoPreviewView(imagePath: selectedPath) {
                     showPreview = false
